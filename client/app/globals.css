@@ -71,3 +71,7 @@ td{
 tr:nth-child(even) {
   background-color: #f9f8f8;
 } */
+
+.input{
+  @apply text-slate-500 text-[14px] bg-slate-50 rounded border border-blue-50 p-2 outline-blue-200 mt-2 mb-2 px-4
+}
