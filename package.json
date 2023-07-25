@@ -1,0 +1,16 @@
+{
+  "name": "employees",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch":"npm run dev --prefix client & npm run dev --prefix server",
+    "test": "npm test --prefix client & npm test --prefix server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
+}
