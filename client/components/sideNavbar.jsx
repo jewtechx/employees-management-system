@@ -13,7 +13,7 @@ export default function SideNavbar() {
     borderLeft:'4px solid white'
   }
   return (
-    <div className="sticky top-0 flex flex-col h-[100vh] w-max rounded-tr-lg bg-slate-800">
+    <div className="sticky top-0 flex flex-col h-[100vh] w-max rounded-tr-lg bg-[#111]">
         <h1 className="text-slate-100 font-bold p-6 spacing-2 text-lg hidden sm:block">EmployEase</h1>
 
         <div className='mt-10'>

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch":"npm run dev --prefix client & npm run dev --prefix server",
+    "watch":"npm run dev --prefix server & npm run dev --prefix client",
     "test": "npm test --prefix client & npm test --prefix server"
   },
   "keywords": [],
