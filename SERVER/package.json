@@ -4,16 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "test-watch":"jest --watch",
-    "dev": "nodemon src/empserver.js"
+    "test": "jest --detectOpenHandles",
+    "test-watch": "jest --watch",
+    "start": "nodemon src/empserver.js",
+    "dev": "nodemon src/empserver.js",
+    "cluster": "pm2 start src/empserver.js -i max"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "pm2": "^5.3.0",
+    "uuid": "^9.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "devDependencies": {
     "jest": "^29.6.1",

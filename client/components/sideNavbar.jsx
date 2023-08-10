@@ -1,36 +1,33 @@
+'use client'
+import React from 'react'
 import Link from 'next/link'
 import {BiSolidDashboard,BiSolidGroup,BiSolidCategory,BiSolidShield,BiSolidNote,BiSolidGrid} from 'react-icons/bi'
+
+import { usePathname } from 'next/navigation'
+
 export default function SideNavbar() {
+  const pathname = usePathname()
+  
+  const linkStyle = {
+    color:"white",
+    borderLeft:'4px solid white'
+  }
   return (
     <div className="sticky top-0 flex flex-col h-[100vh] w-max rounded-tr-lg bg-slate-800">
-        <h1 className="text-slate-100 font-bold p-6 spacing-2 text-2xl hidden sm:block">Empmang</h1>
+        <h1 className="text-slate-100 font-bold p-6 spacing-2 text-lg hidden sm:block">EmployEase</h1>
 
         <div className='mt-10'>
           <ul className='flex flex-col gap-6 text-right'>
 
-            <div className='w-auto text-left px-6'>
-            <li className='
-            relative
-            sidenav
-            text-slate-400
-             flex gap-2 
-             hover:text-slate-100   
-             hover:after:absolute hover:after:left-0 hover:after:w-20 hover:after:bg-slate-100 hover:after:h-auto
-             transition duration-2000 ease-in-out'>
+            <div className='w-auto text-left px-6 ' style={pathname == '/' ? linkStyle : {}}>
+            <li className='sidenav-links duration-2000' style={pathname == '/' ? {color:'#f3f3f3'} : {}}>
               <BiSolidDashboard size={22}/>
-              <Link href='/' className='hidden sm:block'>Dashboard</Link>
+              <Link href='/' className='hidden sm:block' >Dashboard</Link>
               </li>
               
             </div>  
             <div className='w-auto text-left px-6'>
-            <li className='
-            relative
-            sidenav
-            text-slate-400
-             flex gap-2 
-             hover:text-slate-100   
-             hover:after:absolute hover:after:left-0 hover:after:w-20 hover:after:bg-slate-100 hover:after:h-auto
-             transition duration-2000 ease-in-out'>
+            <li className='sidenav-links duration-2000'>
               <BiSolidGroup size={22}/>
               <Link href='/' className='hidden sm:block'>Employees Access</Link>
               </li>
@@ -38,14 +35,7 @@ export default function SideNavbar() {
 
 
             <div className='w-auto text-left px-6'>
-            <li className='
-            relative
-            sidenav
-            text-slate-400
-             flex gap-2 
-             hover:text-slate-100   
-             hover:after:absolute hover:after:left-0 hover:after:w-20 hover:after:bg-slate-100 hover:after:h-auto
-             transition duration-2000 ease-in-out'>
+            <li className='sidenav-links duration-2000'>
               <BiSolidCategory size={22}/>
               <Link href='/' className='hidden sm:block'>Categories</Link>
               </li>
@@ -53,14 +43,7 @@ export default function SideNavbar() {
 
 
             <div className='w-auto text-left px-6'>
-            <li className='
-            relative
-            sidenav
-            text-slate-400
-             flex gap-2 
-             hover:text-slate-100   
-             hover:after:absolute hover:after:left-0 hover:after:w-20 hover:after:bg-slate-100 hover:after:h-auto
-             transition duration-2000 ease-in-out'>
+            <li className='sidenav-links duration-2000'>
               <BiSolidNote size={22}/>
               <Link href='/' className='hidden sm:block'>Reports/Invoices</Link>
               </li>
@@ -68,14 +51,7 @@ export default function SideNavbar() {
 
 
             <div className='w-auto text-left px-6'>
-            <li className='
-            relative
-            sidenav
-            text-slate-400
-             flex gap-2 
-             hover:text-slate-100   
-             hover:after:absolute hover:after:left-0 hover:after:w-20 hover:after:bg-slate-100 hover:after:h-auto
-             transition duration-2000 ease-in-out'>
+            <li className='sidenav-links duration-2000'>
               <BiSolidShield size={22}/>
               <Link href='/' className='hidden sm:block'>Policy</Link>
               </li>
@@ -83,14 +59,7 @@ export default function SideNavbar() {
 
 
             <div className='w-auto text-left px-6'>
-            <li className='
-            relative
-            sidenav
-            text-slate-400
-             flex gap-2 
-             hover:text-slate-100   
-             hover:after:absolute hover:after:left-0 hover:after:w-20 hover:after:bg-slate-100 hover:after:h-auto
-             transition duration-2000 ease-in-out'>
+            <li className='sidenav-links duration-2000'>
               <BiSolidGrid size={22}/>
               <Link href='/' className='hidden sm:block'>Analytics</Link>
               </li>

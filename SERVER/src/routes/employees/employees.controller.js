@@ -1,8 +1,8 @@
 const { pool } = require('../../models/model.employees');
-
+const uuid = require('uuid')
 // get
 function getAllEmployees(req, res) {
-  pool.query('SELECT * FROM employees')
+  pool.query('SELECT * FROM employee ORDER BY start_date')
     .then((result) => {
       const rows = result.rows;
       return res.status(200).json(rows);
@@ -15,7 +15,7 @@ function getAllEmployees(req, res) {
 //get spec employee
 function getSpecEmployee(req,res){
   const id = req.params.id
-  pool.query('SELECT * FROM employees WHERE id = $1',[id])
+  pool.query('SELECT * FROM employee WHERE id = $1',[id])
   .then(result => {
     const { rows } = result
     return res.status(200).json(rows)
@@ -27,6 +27,7 @@ function getSpecEmployee(req,res){
 
 // post
 function addEmployer(req, res) {
+  const id = uuid.v4();
     const {
       first_name,
       last_name,
@@ -56,7 +57,6 @@ function addEmployer(req, res) {
       !position ||
       !salary ||
       !start_date ||
-      !supervisor ||
       !status){
        return res.status(400).json({
           error:'Probably missing required fields while posting'
@@ -74,7 +74,8 @@ function addEmployer(req, res) {
       }
 
     const query = `
-      INSERT INTO employees (
+      INSERT INTO employee (
+        id,
         first_name,
         last_name,
         date_of_birth,
@@ -89,10 +90,11 @@ function addEmployer(req, res) {
         end_date,
         supervisor,
         status
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,$14);
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,$14,$15);
     `;
   
     const values = [
+      id,
       first_name,
       last_name,
       date_of_birth,
@@ -122,6 +124,7 @@ function addEmployer(req, res) {
      
   }
   
+  //update
   function updateEmployeeDetails(req, res) {
     const {
       id,
@@ -156,7 +159,6 @@ function addEmployer(req, res) {
       !position ||
       !salary ||
       !start_date ||
-      !supervisor ||
       !status){
        return res.status(400).json({
           error:'Probably missing required fields while updating'
@@ -164,7 +166,7 @@ function addEmployer(req, res) {
       }
 
     const query = `
-      UPDATE employees 
+      UPDATE employee 
       SET 
         first_name = $2,
         last_name = $3,
@@ -217,10 +219,16 @@ function addEmployer(req, res) {
 
 //   delete
 function deleteEmployee(req, res) {
-    const employeeId = Number(req.params.id);
+    const employeeId = req.params.id;
+
+    if(!employeeId){
+      res.status('400').json({
+        error:"employee not found"
+      })
+    }
   
     const query = `
-      DELETE FROM employees
+      DELETE FROM employee
       WHERE id = $1
     `;
   

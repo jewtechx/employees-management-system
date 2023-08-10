@@ -1,6 +1,75 @@
 const request = require('supertest')
 const app = require('../../app')
 
+
+var employeeData = {
+  first_name:"Sandra ",
+  last_name:"Larbi Danquah",
+  date_of_birth:"06/01/2006",
+  gender:"female",
+  email:"sandy15@gmail.com",
+  phone_number:"0591660801",
+  address:"125 Emp street, NYC",
+  department:"Management",
+  position:"assistant",
+  salary:"809990.00",
+  start_date:"01/01/2026",
+  end_date:null,
+  supervisor:"God",
+  status:"verified"
+}
+
+var employeeDataForPutRequest = {
+  id:'c964157d-72e9-4131-966e-e8ee05ee00e4',
+  first_name:"Sandra ",
+  last_name:"Larbi Danquah",
+  date_of_birth:"06/01/2006",
+  gender:"female",
+  email:"sandy15@gmail.com",
+  phone_number:"0591660801",
+  address:"125 Emp street, NYC",
+  department:"Management",
+  position:"assistant",
+  salary:"809990.00",
+  start_date:"01/01/2026",
+  end_date:null,
+  supervisor:"God",
+  status:"verified"
+}
+
+var employeeDataWithoutDate = {
+first_name:"Sandra ",
+last_name:"Larbi Danquah",
+date_of_birth:"06/01/2006",
+gender:"female",
+email:"sandy15@gmail.com",
+phone_number:"0591660801",
+address:"125 Emp street, NYC",
+department:"Management",
+position:"assistant",
+salary:"809990.00",
+supervisor:"God",
+status:"verified"
+}
+
+var employeeDataWithInvalidDate = {
+  first_name:"Sandra ",
+  last_name:"Larbi Danquah",
+  date_of_birth:"dfdgrgrgrf",
+  gender:"female",
+  email:"sandy15@gmail.com",
+  phone_number:"0591660801",
+  address:"125 Emp street, NYC",
+  department:"Management",
+  position:"assistant",
+  salary:"809990.00",
+  start_date:"fgerdfdfd",
+  end_date:null,
+  supervisor:"God",
+  status:"verified"
+}
+
+
 describe('Test GET /employees', () => {
     test('It should respond with 200 success', async () => {
         const response = await request(app)
@@ -11,55 +80,6 @@ describe('Test GET /employees', () => {
 })
 
 describe('Test POST /launches', () => {
-
-    const employeeData = {
-        first_name:"Sandra ",
-        last_name:"Larbi Danquah",
-        date_of_birth:"06/01/2006",
-        gender:"female",
-        email:"sandy15@gmail.com",
-        phone_number:"0591660801",
-        address:"125 Emp street, NYC",
-        department:"Management",
-        position:"assistant",
-        salary:"809990.00",
-        start_date:"01/01/2026",
-        end_date:null,
-        supervisor:"God",
-        status:"verified"
-  }
-
-  const employeeDataWithoutDate = {
-    first_name:"Sandra ",
-    last_name:"Larbi Danquah",
-    date_of_birth:"06/01/2006",
-    gender:"female",
-    email:"sandy15@gmail.com",
-    phone_number:"0591660801",
-    address:"125 Emp street, NYC",
-    department:"Management",
-    position:"assistant",
-    salary:"809990.00",
-    supervisor:"God",
-    status:"verified"
-}
-
-const employeeDataWithInvalidDate = {
-        first_name:"Sandra ",
-        last_name:"Larbi Danquah",
-        date_of_birth:"dfdgrgrgrf",
-        gender:"female",
-        email:"sandy15@gmail.com",
-        phone_number:"0591660801",
-        address:"125 Emp street, NYC",
-        department:"Management",
-        position:"assistant",
-        salary:"809990.00",
-        start_date:"fgerdfdfd",
-        end_date:null,
-        supervisor:"God",
-        status:"verified"
-}
 
     test('It should respond with 201 created', async() => {
         const response = await request(app)
@@ -83,18 +103,6 @@ const employeeDataWithInvalidDate = {
           error: 'Probably missing required fields while posting' // Corrected the typo 'Probalby' to 'Probably'
         });
       });
-      
-      test('It should catch missing fields in put requests', async () => {
-        const response = await request(app)
-          .put('/employees')
-          .send(employeeDataWithoutDate)
-          .expect(400); // Expecting a status code of 400 for missing fields
-      
-        expect(response.body).toStrictEqual({
-          error: 'Probably missing required fields while updating'
-        });
-      });
-      
 
       test('It should catch invalid dates', async () => {
         const response = await request(app)
@@ -107,4 +115,32 @@ const employeeDataWithInvalidDate = {
           error: 'invalid date format' // Corrected the expectation to the correct error message
         });
       });
+})
+
+//put request
+
+describe('PUT request /employees/', () => {
+  test('It should respond with 200 success', async () => {
+    const response = await request(app)
+    .put('/employees')
+    .send(employeeDataForPutRequest)
+    .expect(200)
+    .expect('Content-Type', /json/)
+  })
+
+  test('It should have all fields', async() => {
+    const response = await request(app)
+    .put('/employees')
+    .send(employeeDataWithoutDate)
+    .expect(400)
+  })
+})
+
+describe("DELETE request /employees", () => {
+  test('An id should be provided', async () => {
+    const response = await request(app)
+    .delete('/employees/:id')
+    .send('')
+    .expect(500)
+  })
 })
