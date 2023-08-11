@@ -69,14 +69,36 @@ var employeeDataWithInvalidDate = {
   status:"verified"
 }
 
-
-describe('Test GET /employees', () => {
+const filter = {
+  condition:"where first_name = 'Moriss';"
+}
+const nullFilter = {
+  condition:"where"
+}
+describe('Test POST /employees', () => {
     test('It should respond with 200 success', async () => {
         const response = await request(app)
         .get('/employees')
         .expect('Content-Type', /json/)
         .expect(200)
     })
+})
+
+describe('Test POST /employees/filter', () => {
+  test('It should respond with 200 success', async () => {
+    const response = await request(app)
+    .post('/employees/filter')
+    .send(filter)
+    .expect('Content-Type', /json/)
+    .expect(200)
+  })
+
+  test('It should respond with 500 Internal Server Error', async() => {
+    const response = await request (app)
+    .post('/employees/filter')
+    .send(nullFilter)
+    .expect(500)
+  })
 })
 
 describe('Test POST /launches', () => {

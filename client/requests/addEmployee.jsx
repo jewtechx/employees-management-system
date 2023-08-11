@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default async function AddEmployee(data) {
-  const res = await fetch('http://localhost:4343/employees',{
+  const res = await fetch('http://localhost:4000/employees',{
     method:'post',
     headers:{
         'Content-Type':'application/json'

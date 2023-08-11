@@ -3,7 +3,7 @@ export async function updateEmployeeDetails(data) {
     try {
       // Make an API call to update the employee data on the server
       // For example, using fetch or Axios or any other HTTP client
-      const response = await fetch('http://localhost:4343/employees', {
+      const response = await fetch('http://localhost:4000/employees', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

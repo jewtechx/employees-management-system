@@ -1,6 +1,6 @@
 const http = require('http');
 
-const PORT = 4343;
+const PORT = 4000;
 
 const app = require('./app');
 

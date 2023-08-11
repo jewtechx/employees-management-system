@@ -4,8 +4,8 @@ import Topnav from '@/components/topnav'
 import Head from 'next/head'
 
 export const metadata = {
-  title: 'Empmang',
-  description: 'Manage your work here at ease',
+  title: 'EmployEase',
+  description: 'Manage your employees here at ease',
 }
 
 export default function RootLayout({

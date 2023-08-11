@@ -25,6 +25,22 @@ function getSpecEmployee(req,res){
   })
 }
 
+//getFilteredEmployee
+async function getFilteredEmployee(req,res){
+  try{
+    const {condition} = req.body
+    console.log(condition)
+    const query = `Select * from employee ${condition}`
+    pool.query(query)
+    .then(results => {
+      const { rows } = results
+      return res.status(200).json(rows)
+    })
+  }catch(err){
+    res.status(500).json({error:"Internal Server Error"})
+  }
+}
+
 // post
 function addEmployer(req, res) {
   const id = uuid.v4();
@@ -245,6 +261,7 @@ function deleteEmployee(req, res) {
 module.exports = {
     getAllEmployees,
     getSpecEmployee,
+    getFilteredEmployee,
     addEmployer,
     updateEmployeeDetails,
     deleteEmployee

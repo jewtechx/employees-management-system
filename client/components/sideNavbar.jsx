@@ -6,8 +6,8 @@ import {BiSolidDashboard,BiSolidGroup,BiSolidCategory,BiSolidShield,BiSolidNote,
 import { usePathname } from 'next/navigation'
 
 export default function SideNavbar() {
-  const pathname = usePathname()
-  
+  const pathname = usePathname().split('/')[1]
+  console.log(pathname)
   const linkStyle = {
     color:"white",
     borderLeft:'4px solid white'
@@ -19,17 +19,17 @@ export default function SideNavbar() {
         <div className='mt-10'>
           <ul className='flex flex-col gap-6 text-right'>
 
-            <div className='w-auto text-left px-6 ' style={pathname == '/' ? linkStyle : {}}>
-            <li className='sidenav-links duration-2000' style={pathname == '/' ? {color:'#f3f3f3'} : {}}>
+            <div className='w-auto text-left px-6 ' style={pathname === '' || pathname === 'employee' ? linkStyle : {}}>
+            <li className='sidenav-links duration-2000' style={pathname === '' || pathname === 'employee' ? {color:'#f3f3f3'} : {}}>
               <BiSolidDashboard size={22}/>
               <Link href='/' className='hidden sm:block' >Dashboard</Link>
               </li>
               
             </div>  
-            <div className='w-auto text-left px-6'>
-            <li className='sidenav-links duration-2000'>
+            <div className='w-auto text-left px-6 ' style={pathname == 'employeeAccess' ? linkStyle : {}}>
+            <li className='sidenav-links duration-2000' style={pathname == 'employeeAccess' ? {color:'#f3f3f3'} : {}}>
               <BiSolidGroup size={22}/>
-              <Link href='/' className='hidden sm:block'>Employees Access</Link>
+              <Link href='/employeeAccess' className='hidden sm:block'>Employees Access</Link>
               </li>
             </div>  
 
