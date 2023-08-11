@@ -29,7 +29,6 @@ function getSpecEmployee(req,res){
 async function getFilteredEmployee(req,res){
   try{
     const {condition} = req.body
-    console.log(condition)
     const query = `Select * from employee ${condition}`
     pool.query(query)
     .then(results => {

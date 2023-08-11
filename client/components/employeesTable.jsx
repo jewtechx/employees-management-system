@@ -11,20 +11,19 @@ import { useRouter } from 'next/navigation';
 export default async function EmployeesTable(props){
   const router = useRouter()
   
-  console.log(await props.filterOnButtonValue);
   //getting filtered employees
 
   const employeesOnFiltered = await props.employees;
   const employeeButtonFilteredData = await props.filterOnButtonValue;
 
-  const employees = await employeeButtonFilteredData ? await employeeButtonFilteredData:await employeesOnFiltered.filter(
+  const employees = (await employeeButtonFilteredData ? await employeeButtonFilteredData:await employeesOnFiltered).filter(
     data => data.first_name.toLowerCase().includes(props.filterValue) ||
     data.last_name.toLowerCase().includes(props.filterVale)||
     data.email.toLowerCase().includes(props.filterValue) ||
     data.id.split('-')[0].includes(props.filterValue)) 
 
     //data 
-    const employeeData = await employeeButtonFilteredData ? employeeButtonFilteredData : await employees.map((employee) => (
+    const employeeData = await employees.map((employee) => (
       <tbody key={employee.id}>
       <tr key={employee.id}>
         <Link href={`/employee/${employee.id}`}>
@@ -86,8 +85,8 @@ export default async function EmployeesTable(props){
         </thead>
 
         {
-          // employeeButtonFilteredData ? employeeButtonFilteredData : employees
-        }
+           employeeData     
+              }
       </table>
     </div>
   );
