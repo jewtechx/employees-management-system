@@ -8,6 +8,7 @@ import {deleteEmployee} from '@/requests/deleteEmployee'
 import { BiSolidEdit, BiSolidTrash } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 
+import {CSVLink} from 'react-csv'
 export default async function EmployeesTable(props){
   const router = useRouter()
   

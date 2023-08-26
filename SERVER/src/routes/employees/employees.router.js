@@ -1,14 +1,16 @@
 const express = require('express')
 const { getAllEmployees,getSpecEmployee,getFilteredEmployee,addEmployer,updateEmployeeDetails,deleteEmployee } = require("./employees.controller")
 
+const {protect} = require('../.././middleware/protect')
+
 const employees = express.Router()
 
-employees.get('/',getAllEmployees)
-employees.get('/:id',getSpecEmployee)
-employees.post(`/filter`,getFilteredEmployee)
-employees.post('/',addEmployer)
-employees.put('/',updateEmployeeDetails)
-employees.delete('/:id',deleteEmployee)
+employees.get('/',protect,getAllEmployees)
+employees.get('/:id',protect,getSpecEmployee)
+employees.post(`/filter`,protect,getFilteredEmployee)
+employees.post('/',protect,addEmployer)
+employees.put('/',protect,updateEmployeeDetails)
+employees.delete('/:id',protect,deleteEmployee)
 
 module.exports = {
     employees,

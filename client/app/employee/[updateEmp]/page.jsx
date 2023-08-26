@@ -48,11 +48,14 @@ export default function Page({ params }) {
     return <div className='p-4 text-2xl text-slate-800 animate-pulse'>Loading...</div>;
   }
 
+  try{
   function handleNewFormData(value, fieldName) {
     setFormValues((prevFormValues) => ({
       ...prevFormValues,
       [fieldName]: value,
     }));
+  }}catch(err){
+    alert('Failed to update details. Probably some required field are empty')
   }
 
   async function handleSave(){

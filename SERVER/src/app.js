@@ -5,6 +5,7 @@ const path = require("path")
 const cors = require("cors")
 
 const { employees } = require('./routes/employees/employees.router')
+const admin = require("./routes/admin/admin.route")
 
 const app = express()
 
@@ -21,5 +22,6 @@ app.use((req,res,next) => {
 
 app.use(express.json())
 app.use('/employees',employees)
+app.use('/admin',admin)
 
 module.exports = app

@@ -2,53 +2,57 @@ const { pool } = require('../../models/model.employees');
 const uuid = require('uuid')
 // get
 function getAllEmployees(req, res) {
-  pool.query('SELECT * FROM employee ORDER BY start_date')
-    .then((result) => {
-      const rows = result.rows;
-      return res.status(200).json(rows);
-    })
-    .catch((error) => {
+  const admin_id = req.user.id
+  pool.query('SELECT * FROM employee WHERE admin_id = $1 ORDER BY start_date',[admin_id])
+  .then((result) => {
+    const rows = result.rows;
+    return res.status(200).json(rows);
+  })
+  .catch((error) => {
       console.log('Error executing query', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     });
-}
-//get spec employee
-function getSpecEmployee(req,res){
-  const id = req.params.id
-  pool.query('SELECT * FROM employee WHERE id = $1',[id])
-  .then(result => {
-    const { rows } = result
-    return res.status(200).json(rows)
-  })
-  .catch(error => {
-    return res.status(200).json(error)
-  })
-}
-
-//getFilteredEmployee
-async function getFilteredEmployee(req,res){
-  try{
+  }
+  //get spec employee
+  function getSpecEmployee(req,res){
+    const id = req.params.id
+    const admin_id = req.user.id
+    pool.query('SELECT * FROM employee WHERE admin_id = $1 AND id = $2',[admin_id,id])
+    .then(result => {
+      const { rows } = result
+      return res.status(200).json(rows)
+    })
+    .catch(error => {
+      return res.status(200).json(error)
+    })
+  }
+  
+  //getFilteredEmployee
+  async function getFilteredEmployee(req,res){
+    try{
+    const admin_id = req.user.id
     const {condition} = req.body
-    const query = `Select * from employee ${condition}`
-    pool.query(query)
+    const query = `Select * from employee where admin_id = $1 ${condition}`
+    await pool.query(query,[admin_id])
     .then(results => {
       const { rows } = results
       return res.status(200).json(rows)
     })
   }catch(err){
-    res.status(500).json({error:"Internal Server Error"})
+    res.status(500).json({error:`Internal Server Error, ${err}`})
   }
 }
 
 // post
 function addEmployer(req, res) {
   const id = uuid.v4();
-    const {
-      first_name,
-      last_name,
-      date_of_birth,
-      gender,
-      email,
+  const adminId = req.user.id
+  const {
+    first_name,
+    last_name,
+    date_of_birth,
+    gender,
+    email,
       phone_number,
       address,
       department,
@@ -77,7 +81,7 @@ function addEmployer(req, res) {
           error:'Probably missing required fields while posting'
         })
       }
-
+      
 
       const startDate = new Date(start_date)
       const DOB = new Date(date_of_birth)
@@ -104,8 +108,9 @@ function addEmployer(req, res) {
         start_date,
         end_date,
         supervisor,
-        status
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,$14,$15);
+        status,
+        admin_id
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,$14,$15,$16);
     `;
   
     const values = [
@@ -123,7 +128,8 @@ function addEmployer(req, res) {
       start_date,
       end_date,
       supervisor,
-      status
+      status,
+      adminId
     ];
   
     pool
@@ -133,7 +139,7 @@ function addEmployer(req, res) {
       })
       .catch((error) => {
         console.log('Error executing query', error);
-        res.status(400).json({ error: 'Error with database query' });
+        res.status(400).json({ error: `Error with database query: ${error}` });
       });
 
      
@@ -141,6 +147,7 @@ function addEmployer(req, res) {
   
   //update
   function updateEmployeeDetails(req, res) {
+    const adminId = req.user.id
     const {
       id,
       first_name,
@@ -197,7 +204,7 @@ function addEmployer(req, res) {
         end_date = $13,
         supervisor = $14,
         status = $15
-      WHERE id = $1
+      WHERE id = $1 and admin_id = $16
     `;
   
     const values = [
@@ -215,7 +222,8 @@ function addEmployer(req, res) {
       start_date,
       end_date,
       supervisor,
-      status
+      status,
+      adminId
     ];
   
     pool
@@ -232,8 +240,9 @@ function addEmployer(req, res) {
   }
 
 
-//   delete
-function deleteEmployee(req, res) {
+  //   delete
+  function deleteEmployee(req, res) {
+  const adminId = req.user.id
     const employeeId = req.params.id;
 
     if(!employeeId){
@@ -244,11 +253,11 @@ function deleteEmployee(req, res) {
   
     const query = `
       DELETE FROM employee
-      WHERE id = $1
+      WHERE id = $1 and admin_id = $2
     `;
   
     pool
-      .query(query, [employeeId])
+      .query(query, [employeeId,adminId])
       .then(() => {
         return res.status(200).json({ message: 'Employee deleted successfully' });
       })

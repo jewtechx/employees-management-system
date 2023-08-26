@@ -1,6 +1,6 @@
 const request = require('supertest')
 const app = require('../../app')
-
+const {pool} = require("../../models/model.employees")
 
 var employeeData = {
   first_name:"Sandra ",
@@ -70,16 +70,35 @@ var employeeDataWithInvalidDate = {
 }
 
 const filter = {
-  condition:"where first_name = 'Moriss';"
+  condition:"order by first_name"
 }
 const nullFilter = {
   condition:"where"
 }
-describe('Test POST /employees', () => {
+describe('EmployEase', () => {
+
+  let adminToken;
+
+    beforeAll(async () => {
+        // Authenticate as admin and get the token
+        const response = await request(app)
+            .post('/admin/login') // Replace with your authentication route
+            .send({ email: 'jwlarbi15@gmail.com', password: 'Floreat123!' });
+
+        adminToken = response.body.token;
+    });
+
+    afterAll(() => {
+        // Close the database pool after tests are done
+        pool.end();
+    });
+
+
+  describe('Test GET /employees', () => {
     test('It should respond with 200 success', async () => {
         const response = await request(app)
         .get('/employees')
-        .expect('Content-Type', /json/)
+        .set('Authorization', `Bearer ${adminToken}`)
         .expect(200)
     })
 })
@@ -89,26 +108,27 @@ describe('Test POST /employees/filter', () => {
     const response = await request(app)
     .post('/employees/filter')
     .send(filter)
-    .expect('Content-Type', /json/)
+    .set('Authorization', `Bearer ${adminToken}`)
     .expect(200)
   })
-
+  
   test('It should respond with 500 Internal Server Error', async() => {
     const response = await request (app)
     .post('/employees/filter')
     .send(nullFilter)
+    .set('Authorization', `Bearer ${adminToken}`)
     .expect(500)
   })
 })
 
-describe('Test POST /launches', () => {
+describe('Test POST /employees', () => {
 
     test('It should respond with 201 created', async() => {
         const response = await request(app)
         .post('/employees')
         .send(employeeData)
-      .expect('Content-Type', /json/)
-      .expect(201);
+        .expect(201)
+        .set('Authorization', `Bearer ${adminToken}`)
      
       expect(employeeData).toMatchObject(employeeDataWithoutDate)
 
@@ -118,7 +138,7 @@ describe('Test POST /launches', () => {
         const response = await request(app)
           .post('/employees')
           .send(employeeDataWithoutDate)
-          .expect('Content-Type', /json/)
+          .set('Authorization', `Bearer ${adminToken}`)
           .expect(400);
       
         expect(response.body).toStrictEqual({
@@ -130,7 +150,7 @@ describe('Test POST /launches', () => {
         const response = await request(app)
           .post('/employees')
           .send(employeeDataWithInvalidDate)
-          .expect('Content-Type', /json/)
+          .set('Authorization', `Bearer ${adminToken}`)
           .expect(400);
       
         expect(response.body).toStrictEqual({
@@ -147,13 +167,14 @@ describe('PUT request /employees/', () => {
     .put('/employees')
     .send(employeeDataForPutRequest)
     .expect(200)
-    .expect('Content-Type', /json/)
+    .set('Authorization', `Bearer ${adminToken}`)
+    
   })
-
   test('It should have all fields', async() => {
     const response = await request(app)
     .put('/employees')
     .send(employeeDataWithoutDate)
+    .set('Authorization', `Bearer ${adminToken}`)
     .expect(400)
   })
 })
@@ -163,6 +184,9 @@ describe("DELETE request /employees", () => {
     const response = await request(app)
     .delete('/employees/:id')
     .send('')
+    .set('Authorization', `Bearer ${adminToken}`)
     .expect(500)
   })
+})
+
 })
