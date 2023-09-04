@@ -7,17 +7,19 @@ import {deleteEmployee} from '@/requests/deleteEmployee'
 
 import { BiSolidEdit, BiSolidTrash } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
+import {useSelector} from 'react-redux'
 
-import {CSVLink} from 'react-csv'
-export default async function EmployeesTable(props){
+// import {CSVLink} from 'react-csv'
+export default async function EmployeesTable(){
   const router = useRouter()
   
   //getting filtered employees
 
-  const employeesOnFiltered = await props.employees;
-  const employeeButtonFilteredData = await props.filterOnButtonValue;
+  // const employeesOnFiltered = await props.employees;
+  // const employeeButtonFilteredData = await props.filterOnButtonValue;
+  const empList = useSelector((state) => state.employees.employees)
 
-  const employees = (await employeeButtonFilteredData ? await employeeButtonFilteredData:await employeesOnFiltered).filter(
+  const employees = await empList.filter(
     data => data.first_name.toLowerCase().includes(props.filterValue) ||
     data.last_name.toLowerCase().includes(props.filterVale)||
     data.email.toLowerCase().includes(props.filterValue) ||
@@ -49,7 +51,7 @@ export default async function EmployeesTable(props){
         <td className='gap-1'>
           <button onClick={() => goToUpdateEmployeeDetails(employee.id)}><BiSolidEdit size={22} color='lightblue' /></button>
        
-        <button onClick={() => deleteEmployee(employee.id)}><BiSolidTrash size={22} color='pink' /></button>
+        <button onClick={() => deleteEmployee(employee.id,token.token)}><BiSolidTrash size={22} color='pink' /></button>
         </td>
       </tr>
       </tbody>
@@ -62,14 +64,9 @@ export default async function EmployeesTable(props){
     function goToUpdateEmployeeDetails(id){
       router.push(`/employee/${id}`)
     }
-    
-    // const [modal,setModal] = useState('hidden')
-  //show modal
-  // function showModal(){
-  //  setModal('block')
-  //  alert(modal)
-  // }
 
+    const token = JSON.parse(localStorage.getItem('user'))
+    console.log(token.token)
   return (
     <div>
       <table className=''>

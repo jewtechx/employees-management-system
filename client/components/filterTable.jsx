@@ -1,13 +1,16 @@
 import {BiSolidSearch, BiSolidFilterAlt,BiSolidFileExport} from 'react-icons/bi'
+import { useDispatch } from 'react-redux'
+import { filterEmployee } from '../redux/employees/employees.reducer'
 
-export default function FilterTable(props) {
-  //getting wildcards
-   function getFilterValue(value){
-     props.filterValue(value.toLowerCase())
-  }
+export default function FilterTable() {
+  // //getting wildcards
+  //  function getFilterValue(value){
+  //    props.filterValue(value.toLowerCase())
+  // }
 
   function filterByButton(condition){
-    props.filterButtonCondition(condition)
+    const dispatch = useDispatch()
+    dispatch(filterEmployee(condition))
   }
   return (
     <div className="">

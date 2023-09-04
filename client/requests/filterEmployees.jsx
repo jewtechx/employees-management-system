@@ -1,8 +1,8 @@
-import React from 'react'
 import { useSelector } from "react-redux"
 
 export default async function FilterEmployees(condition) {
    const token = useSelector((state) => state.auth.token)
+
    const res = await fetch(`http://localhost:4000/employees/filter`,{
       method:'POST',
       headers:{

@@ -2,6 +2,7 @@
 import React from 'react'
 import AddEmployee from '../../../requests/addEmployee'
 import { useRouter } from 'next/navigation'
+import ReduxProvider from '../../provider'
 
 export default function page({params}) {
   const router = useRouter()
@@ -101,6 +102,7 @@ export default function page({params}) {
     router.push('/')
   }
   return (
+    <ReduxProvider>
     <div className='mt-6'>
         <h1 className='text-2xl text-slate-800'>Add a new employee</h1>
 
@@ -195,5 +197,6 @@ export default function page({params}) {
 
         </form>
       </div>
+      </ReduxProvider>
   )
 }

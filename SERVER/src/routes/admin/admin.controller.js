@@ -45,9 +45,8 @@ const register = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
-    const { rows: admin } = await pool.query('SELECT * FROM admin WHERE email = $1', [email]);
-
-    if (admin.length > 0 && (await bcrypt.compare(password, admin[0].password))) {
+    const { rows: admin } = await pool.query('SELECT * FROM admin WHERE email = $1', [email])
+    if (admin[0] && (await bcrypt.compare(password, admin[0].password))) {
         res.status(200).json({
             id: admin[0].id,
             name: admin[0].name,
