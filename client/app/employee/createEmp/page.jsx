@@ -1,8 +1,9 @@
 "use client"
-import React from 'react'
-import AddEmployee from '../../../requests/addEmployee'
+import React,{useEffect} from 'react'
+import {AddEmployee} from '../../../redux/employees/employees.reducer'
 import { useRouter } from 'next/navigation'
 import ReduxProvider from '../../provider'
+import { useSelector,useDispatch } from 'react-redux'
 
 export default function page({params}) {
   const router = useRouter()
@@ -40,7 +41,6 @@ export default function page({params}) {
 
   function handleNewFormData(value, name) {
     const date = formatDateForInput();
-    console.log(date);
   
     let updatedValue = value;
   
@@ -62,23 +62,31 @@ export default function page({params}) {
       [name]: updatedValue,
     }));
   
-    console.log(formValues);
   }
   
-  
-  
-  async function handleSave(){
-    setSaving('Saving...')
+  const dispatch = useDispatch()
+  const state = useSelector((state) => state.employees)
+  const {loading,error,ready} = state
+
+  async function handleSave() {
+    setSaving('Saving...') 
     try{
-      await  AddEmployee(formValues)
-      router.push('/')
+      await dispatch(AddEmployee(formValues))
     }catch(err){
       alert('Error adding employee')
     }
     setSaving('Save')
    }
 
+  
+  useEffect(() => {
+      
+    if (ready) {
+      router.push('/')
+    }
+   },[ready,router])
 
+  
    function clearData(){
     setFormValues(prev => ({
       first_name:'',

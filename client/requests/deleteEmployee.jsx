@@ -10,7 +10,7 @@ export const deleteEmployee = async(id) => {
     if (confirmed) {
 
       try {
-        fetch(`http://localhost:4000/employees/${empid}`, {
+        fetch(`http://localhost:5000/employees/${empid}`, {
           method: 'delete',
           headers: {
             'Content-Type': 'application/json',

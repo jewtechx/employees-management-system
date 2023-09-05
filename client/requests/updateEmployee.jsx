@@ -5,7 +5,7 @@ export async function updateEmployeeDetails(data) {
     // Make an API call to update the employee data on the server
     // For example, using fetch or Axios or any other HTTP client
     const token = useSelector((state) => state.auth.token)
-      const response = await fetch('http://localhost:4000/employees', {
+      const response = await fetch('http://localhost:5000/employees', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -7,9 +7,7 @@ import {useRouter} from 'next/navigation'
 export default function Topnav() {
   const router = useRouter();
 
-  var name, email
-  
-  useEffect(() => {
+    var name, email
     const userDataString = localStorage.getItem("user");
 if (userDataString) {
     const userData = JSON.parse(userDataString);
@@ -18,16 +16,13 @@ if (userDataString) {
 } else {
     console.log("User data not found in localStorage.");
 }
-
- })
-
   return (
     <div className='flex flex-col gap-2'>
       <div className='flex gap-4 py-4 justify-end  items-center'>
          <BiSolidNotification size={24}/>
          <p className='text-slate-600 font-bold'>{name}</p>
          <Image src='/cut1.png' alt='profile' width={30} height={30} className='rounded-full'/>
-        <button onClick={() => { localStorage.removeItem("user")}} type='button' className='bg-slate-900 hover:bg-neutral-focus cursor-pointer p-[0.3rem] rounded-[0.2rem] text-base-200 text-[12px] font-bold gap-2 px-2 flex items-center'>
+        <button onClick={() => { localStorage.removeItem("user"); router.push('/auth/login')}} type='button' className='bg-slate-900 hover:bg-neutral-focus cursor-pointer p-[0.3rem] rounded-[0.2rem] text-base-200 text-[12px] font-bold gap-2 px-2 flex items-center'>
             <BiSolidUserPlus size={21}/>
             Log Out
           </button>

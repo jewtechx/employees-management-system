@@ -1,9 +1,11 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'; // Use 'next/router' instead of 'next/navigation'
-import { RegisterUser } from '../../redux/auth/auth.reducer';
-import './auth.css';
+import { RegisterUser } from '../../../redux/auth/auth.reducer';
+import '../../../components/auth/auth.css';
 import { useDispatch, useSelector } from 'react-redux';
+import Link from 'next/link'
+
 
 const Register = () => {
 
@@ -35,12 +37,9 @@ const Register = () => {
       } else {
         try {
           // Assuming RegisterUser is an async Redux action
-          await dispatch(RegisterUser({ name, email, password }));
-          if(loading){
-            return <h1> Loading</h1>
-          }
+          dispatch(RegisterUser({ name, email, password }));
           router.push('/')
-
+          window.location.reload();
         } catch (err) {
           // Handle the error gracefully and display an error message in the UI
           alert('Error with registration. Probably the user already exists.');
@@ -51,12 +50,12 @@ const Register = () => {
 
     
   return (
-    <>
-      <section className='heading'>
+    <div className="w-full text-center h-screen z-40 fixed top-0 left-0 right-0 bottom-0 flex flex-col bg-slate-50 items-center justify-center">
+      <section className='heading text-center'>
         <h1>
            Register
         </h1>
-        <p>Please create an account</p>
+        <p className='text-lg'>Please create an account</p>
       </section>
 
       <section className='form'>
@@ -111,8 +110,16 @@ const Register = () => {
             </button>
           </div>
         </form>
+        <p>Already have an account? <Link href='/auth/login' className='text-slate-400'>Login here</Link></p>
       </section>
-    </>
+
+      
+      {/* Display loading message */}
+      {loading && <h1>Loading...</h1>}
+
+      {/* Display error message */}
+      {error && <p className='text-red-700'>Error with registration. Probably user already exists</p>}
+    </div>
   )
 }
 

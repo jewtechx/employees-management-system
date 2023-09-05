@@ -4,27 +4,25 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 import {deleteEmployee} from '@/requests/deleteEmployee'
-
 import { BiSolidEdit, BiSolidTrash } from 'react-icons/bi';
-import { useRouter } from 'next/navigation';
 import {useSelector} from 'react-redux'
 
 // import {CSVLink} from 'react-csv'
 export default async function EmployeesTable(){
-  const router = useRouter()
   
   //getting filtered employees
-
+  
   // const employeesOnFiltered = await props.employees;
   // const employeeButtonFilteredData = await props.filterOnButtonValue;
-  const empList = useSelector((state) => state.employees.employees)
-
-  const employees = await empList.filter(
-    data => data.first_name.toLowerCase().includes(props.filterValue) ||
-    data.last_name.toLowerCase().includes(props.filterVale)||
-    data.email.toLowerCase().includes(props.filterValue) ||
-    data.id.split('-')[0].includes(props.filterValue)) 
-
+ 
+  const employees = useSelector((state) => state.employees.employees)
+  console.log(employees)
+  // const employees = await empList.filter(
+  //   data => data.first_name.toLowerCase().includes(props.filterValue) ||
+  //   data.last_name.toLowerCase().includes(props.filterVale)||
+  //   data.email.toLowerCase().includes(props.filterValue) ||
+  //   data.id.split('-')[0].includes(props.filterValue)) 
+    
     //data 
     const employeeData = await employees.map((employee) => (
       <tbody key={employee.id}>
@@ -65,8 +63,6 @@ export default async function EmployeesTable(){
       router.push(`/employee/${id}`)
     }
 
-    const token = JSON.parse(localStorage.getItem('user'))
-    console.log(token.token)
   return (
     <div>
       <table className=''>
@@ -83,7 +79,7 @@ export default async function EmployeesTable(){
         </thead>
 
         {
-           employeeData     
+           employeeData  ? employeeData : <h1>No employee added</h1>   
               }
       </table>
     </div>

@@ -9,7 +9,7 @@ const initialState = {
 
 export const RegisterUser = createAsyncThunk('register', async (data,thunkAPI) => {
     try {
-        const res = await fetch('http://localhost:4000/admin/', {
+        const res = await fetch('http://localhost:5000/admin/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export const RegisterUser = createAsyncThunk('register', async (data,thunkAPI) =
 
 export const LoginUser = createAsyncThunk('login', async (data,thunkAPI) => {
     try {
-        const res = await fetch('http://localhost:4000/admin/login', {
+        const res = await fetch('http://localhost:5000/admin/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -49,7 +49,6 @@ export const LoginUser = createAsyncThunk('login', async (data,thunkAPI) => {
     
         const userData = await res.json();
         
-        localStorage.removeItem('user')
         localStorage.setItem('user', JSON.stringify(userData));
     
         const {token} = userData
@@ -73,30 +72,30 @@ const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(RegisterUser.pending, (state) => {
+            .addCase(RegisterUser.pending,(state) => {
                 state.loading = true
           })
             .addCase(RegisterUser.fulfilled, (state,action) => {
                 state.success = true
                 state.token = action.payload
           })
-            .addCase(RegisterUser.rejected, (state) => {
-                state.error = true,
+            .addCase(RegisterUser.rejected,(state) => {
+                state.error = true
                 state.success = false
           })
-            .addCase(LoginUser.pending, (state) => {
+            .addCase(LoginUser.pending,(state) => {
                 state.loading = true
           })
             .addCase(LoginUser.fulfilled, (state,action) => {
-                state.success = true,
+                state.success = true
                 state.token = action.payload
           })
-            .addCase(LoginUser.rejected, (state) => {
+            .addCase(LoginUser.rejected,(state) => {
                 state.error = true,
                 state.success = false
           })
     }
 })
 
-export const authActions = authSlice.actions
+export const {reset} = authSlice.actions
 export default authSlice.reducer

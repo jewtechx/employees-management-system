@@ -1,9 +1,7 @@
 'use client'
 import React from 'react';
-import { getSpecificEmployee } from '@/requests/getSpecEmployee';
 import {updateEmployeeDetails} from '@/requests/updateEmployee';
 import {useRouter} from 'next/navigation'
-import ReduxProvider from '../../provider'
 
 export default function Page({ params }) {
   var id = params.updateEmp;
