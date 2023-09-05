@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-
-import {deleteEmployee} from '@/requests/deleteEmployee'
+import {deleteEmployee} from '@/redux/employees/employees.reducer'
 import { BiSolidEdit, BiSolidTrash } from 'react-icons/bi';
-import {useSelector} from 'react-redux'
+import {useSelector,useDispatch} from 'react-redux'
+import { useRouter } from 'next/navigation';
 
 // import {CSVLink} from 'react-csv'
 export default async function EmployeesTable(){
@@ -14,16 +14,24 @@ export default async function EmployeesTable(){
   
   // const employeesOnFiltered = await props.employees;
   // const employeeButtonFilteredData = await props.filterOnButtonValue;
- 
+     
+    //data 
+      //updating employee details
+      const router = useRouter()
+      function goToUpdateEmployeeDetails(id){
+        router.push(`/employee/${id}`)
+  }
+  
+
+
+  const dispatch = useDispatch()
   const employees = useSelector((state) => state.employees.employees)
-  console.log(employees)
   // const employees = await empList.filter(
   //   data => data.first_name.toLowerCase().includes(props.filterValue) ||
   //   data.last_name.toLowerCase().includes(props.filterVale)||
   //   data.email.toLowerCase().includes(props.filterValue) ||
   //   data.id.split('-')[0].includes(props.filterValue)) 
-    
-    //data 
+
     const employeeData = await employees.map((employee) => (
       <tbody key={employee.id}>
       <tr key={employee.id}>
@@ -49,7 +57,7 @@ export default async function EmployeesTable(){
         <td className='gap-1'>
           <button onClick={() => goToUpdateEmployeeDetails(employee.id)}><BiSolidEdit size={22} color='lightblue' /></button>
        
-        <button onClick={() => deleteEmployee(employee.id,token.token)}><BiSolidTrash size={22} color='pink' /></button>
+        <button onClick={() => dispatch(deleteEmployee(employee.id))}><BiSolidTrash size={22} color='pink' /></button>
         </td>
       </tr>
       </tbody>
@@ -57,11 +65,7 @@ export default async function EmployeesTable(){
 
     
     
-    //updating employee details
-    
-    function goToUpdateEmployeeDetails(id){
-      router.push(`/employee/${id}`)
-    }
+  
 
   return (
     <div>

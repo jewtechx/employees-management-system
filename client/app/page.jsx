@@ -13,23 +13,25 @@ const DynamicEmployeesTable = dynamic(() => import('@/components/employeesTable'
 
 export default function Page() {
   //getting token
-  var name, email
+  var name
   const router = useRouter();
 
 const userDataString = localStorage.getItem("user");
 if (userDataString) {
 const userData = JSON.parse(userDataString);
-email = userData.email;
  name = userData.name;
 } else {
 console.log("User data not found in localStorage.");
 }
 
-if (name) {
-  router.push('/')
-}else{
-  router.push('/auth/login')
-}
+  useEffect(() => {
+    if (!name) {
+      router.push('/auth/login')
+    } else {
+      console.log('User present')
+    }
+  },[name])
+
 
   //employes
 const dispatch = useDispatch()

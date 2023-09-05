@@ -84,7 +84,7 @@ export default function page({params}) {
     if (ready) {
       router.push('/')
     }
-   },[ready,router])
+   },[ready])
 
   
    function clearData(){

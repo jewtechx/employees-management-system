@@ -46,7 +46,6 @@ function Login() {
     if (success) {
       router.push('/');
       dispatch(reset())
-      window.location.reload();
     }
   }, [success, router]);
 
@@ -91,11 +90,11 @@ function Login() {
         <p>Not in the ecosystem yet? <Link href='/auth/register' className='text-slate-600'>Register here</Link></p>
       </section>
 
-      {/* Display loading message */}
-      {loading && <h1>Loading...</h1>}
+     {/* Display loading message */}
+     {loading ? <h1>Loading...</h1> : ''}
 
-      {/* Display error message */}
-      {error && <p className='text-red-700'>Error with login. Probably you entered wrong credentials</p>}
+    {/* Display error message */}
+    {error ? <p className='text-red-700'>Error with login. Probably you provided wrong credentials</p> : ''}
     </div>
   );
 }

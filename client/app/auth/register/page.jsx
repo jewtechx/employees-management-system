@@ -39,7 +39,6 @@ const Register = () => {
           // Assuming RegisterUser is an async Redux action
           dispatch(RegisterUser({ name, email, password }));
           router.push('/')
-          window.location.reload();
         } catch (err) {
           // Handle the error gracefully and display an error message in the UI
           alert('Error with registration. Probably the user already exists.');
@@ -115,10 +114,10 @@ const Register = () => {
 
       
       {/* Display loading message */}
-      {loading && <h1>Loading...</h1>}
+      {loading ? <h1>Loading...</h1> : ''}
 
       {/* Display error message */}
-      {error && <p className='text-red-700'>Error with registration. Probably user already exists</p>}
+      {error ? <p className='text-red-700'>Error with registration. Probably user already exists</p> : ''}
     </div>
   )
 }

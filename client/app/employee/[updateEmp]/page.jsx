@@ -1,16 +1,19 @@
 'use client'
 import React from 'react';
-import {updateEmployeeDetails} from '@/requests/updateEmployee';
+import {updateEmployeeDetails,getSpecEmployee} from '../../../redux/employees/employees.reducer';
 import {useRouter} from 'next/navigation'
+import { useSelector,useDispatch } from 'react-redux';
 
 export default function Page({ params }) {
   var id = params.updateEmp;
   const [employee, setEmployee] = React.useState(null);
   const [formValues, setFormValues] = React.useState({});
   const [saving,setSaving] = React.useState('Save')
+  const dispatch = useDispatch()
 
+  
   React.useEffect(() => {
-    getSpecificEmployee(id)
+    dispatch(getSpecEmployee(id))
       .then((employeeData) => {
         setEmployee(employeeData[0]);
         setFormValues(formatFormValues(employeeData[0])); // Set formValues when employee data is fetched

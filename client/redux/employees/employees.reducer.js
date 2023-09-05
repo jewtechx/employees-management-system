@@ -85,6 +85,55 @@ export const AddEmployee = createAsyncThunk('addEmployee', async(data,thunkAPI) 
   }
 })
 
+
+export const deleteEmployee = createAsyncThunk('delete',async(id,thunkAPI) => {
+
+  const empid = id;
+  const confirmed = window.confirm(`Are you sure you want to delete this employee - id : ${empid.split('-')[0]}?`);
+  
+  if (confirmed) {
+
+    try {
+      fetch(`http://localhost:5000/employees/${empid}`, {
+        method: 'delete',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      window.location.reload();
+
+  } catch (err) {
+      return thunkAPI.rejectWithValue({err:err.message})
+    }
+
+  }
+  
+})
+
+
+export const updateEmployeeDetails = createAsyncThunk('update',async(data,thunkAPI) => {
+  try {
+      const response = await fetch('http://localhost:5000/employees', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update employee details.');
+      }
+    } catch (error) {
+      // Handle errors if any occurred during the API call
+       return thunkAPI.rejectWithValue({error:error.message})
+    }
+})
+  
+
+  //SLICE 
 const employeeSlice = createSlice({
     name: 'employees',
     initialState,
