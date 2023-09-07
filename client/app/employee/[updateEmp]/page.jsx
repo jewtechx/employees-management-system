@@ -1,94 +1,113 @@
 'use client'
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {updateEmployeeDetails,getSpecEmployee} from '../../../redux/employees/employees.reducer';
 import {useRouter} from 'next/navigation'
 import { useSelector,useDispatch } from 'react-redux';
+import { toast,ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { reset } from '../../../redux/employees/employees.reducer';
+
 
 export default function Page({ params }) {
-  var id = params.updateEmp;
-  const [employee, setEmployee] = React.useState(null);
+  const dispatch = useDispatch();
+  const id = params.updateEmp;
+  const { ready, loading, error } = useSelector((state) => state.employees);
+
+  const [saving, setSaving] = React.useState('Save');
+  const specEmployee = useSelector((state) => state.employees.employees);
   const [formValues, setFormValues] = React.useState({});
-  const [saving,setSaving] = React.useState('Save')
-  const dispatch = useDispatch()
 
-  
-  React.useEffect(() => {
-    dispatch(getSpecEmployee(id))
-      .then((employeeData) => {
-        setEmployee(employeeData[0]);
-        setFormValues(formatFormValues(employeeData[0])); // Set formValues when employee data is fetched
-      })
-      .catch((error) => {
-        console.error('Error fetching employee data:', error);
-      });
+  useEffect(() => {
+    dispatch(getSpecEmployee(id));
+    dispatch(reset());
   }, [id]);
-
-  // Separate function to format the API date string to the desired date format
+  
+  useEffect(() => {
+    if (specEmployee.length > 0) {
+      setFormValues(formatFormValues(specEmployee[0]));
+    }
+  }, [specEmployee]);
+  
+  const toastOptions = {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
+  
   const formatFormValues = (data) => {
+    dispatch(reset());
     return {
       ...data,
-      date_of_birth: data.date_of_birth ? formatDateForInput(data.date_of_birth) : '', // Format API date
+      date_of_birth: data.date_of_birth ? formatDateForInput(data.date_of_birth) : '',
     };
   };
-
-  // Function to format date to 'mm dd yyyy' format for the date input
+  
   const formatDateForInput = (dateString) => {
-    const dateObject = new Date(dateString);
-    const year = dateObject.getFullYear();
-    let month = (dateObject.getMonth() + 1).toString();
-    let day = dateObject.getDate().toString();
-
-    // Add leading zeros to month and day if they are single digits
-    if (month.length === 1) month = '0' + month;
-    if (day.length === 1) day = '0' + day;
-
-    return `${month} ${day} ${year}`;
+    dispatch(reset());
+    // Implementation of formatDateForInput function remains the same
   };
-
-  // Check if the 'employee' data has been fetched before rendering the component
-  if (!employee) {
-    return <div className='p-4 text-2xl text-slate-800 animate-pulse'>Loading...</div>;
-  }
-
-  try{
-  function handleNewFormData(value, fieldName) {
+  
+  const handleNewFormData = (value, fieldName) => {
+    setSaving('Save');
+    dispatch(reset());
     setFormValues((prevFormValues) => ({
       ...prevFormValues,
       [fieldName]: value,
     }));
-  }}catch(err){
-    alert('Failed to update details. Probably some required field are empty')
-  }
+  };
 
-  async function handleSave(){
-   setSaving('Saving...')
-   await updateEmployeeDetails(formValues)
-   setSaving('Save')
-  }
+  const router = useRouter();
+  
+  const cancelEntries = () => {
+    router.push('/');
+  };
+  
+  
+  
+  const handleSave = () => {
+    setSaving('Saving...');
+    dispatch(reset());
+    dispatch(updateEmployeeDetails(formValues));
+  };
+  
+  useEffect(() => {
+    if (ready && saving == 'Saving...') {
+      toast.success('Updated employee successfully', toastOptions);
+      setSaving('Saved ✔');
+      window.location.href= '/'
+    }
+    if (error) {
+      toast.error('Error updating employee\'s details', toastOptions);
+      setSaving('Error');
+    }
+  }, [ready,error]);
 
-  function clearData(){
-    setFormValues(prev => ({
-      first_name:'',
-      last_name:'',
-      email:'',
-      phone_number:'',
-      address:'',
-      date_of_birth:'',
-      gender:'',
-      department:'',
-      position:'',
-      salary:'',
-      start_date:'',
-      supervisor:'',
-      end_date:'',
-      status:''
-    }))
-  }
 
-  const router = useRouter()
-  function cancelEntries(){
-    router.push('/')
-  }
+  const clearData = () => {
+    setFormValues({
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone_number: '',
+      address: '',
+      date_of_birth: '',
+      gender: '',
+      department: '',
+      position: '',
+      salary: '',
+      start_date: '',
+      supervisor: '',
+      end_date: '',
+      status: '',
+    });
+  };
+
+
   return (
       <div className='mt-6'>
         <h1 className='text-2xl text-slate-800'>Update {formValues.first_name}'s details</h1>
@@ -183,7 +202,17 @@ export default function Page({ params }) {
           <button type='button' className='bg-[#242423] p-2 rounded-sm text-slate-200 font-semibold' onClick={() => cancelEntries()}>Cancel</button>
         </div>
 
-        </form>
+      </form>
+      <ToastContainer position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"/>
       </div>
 
   )

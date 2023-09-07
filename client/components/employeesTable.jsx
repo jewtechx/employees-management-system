@@ -6,31 +6,35 @@ import {deleteEmployee} from '@/redux/employees/employees.reducer'
 import { BiSolidEdit, BiSolidTrash } from 'react-icons/bi';
 import {useSelector,useDispatch} from 'react-redux'
 import { useRouter } from 'next/navigation';
+import NoEmployee from './noEmployee'
+import Modal from './modal'
 
 // import {CSVLink} from 'react-csv'
 export default async function EmployeesTable(){
   
-  //getting filtered employees
-  
-  // const employeesOnFiltered = await props.employees;
-  // const employeeButtonFilteredData = await props.filterOnButtonValue;
-     
-    //data 
-      //updating employee details
-      const router = useRouter()
+  //go to update employee
+       const router = useRouter()
       function goToUpdateEmployeeDetails(id){
         router.push(`/employee/${id}`)
   }
   
+  //delete employee
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  function deleteEmployeeModalShow(name,id) {
+    setIsModalOpen(bool => !bool)
+  }
 
-  const dispatch = useDispatch()
-  const employees = useSelector((state) => state.employees.employees)
-  // const employees = await empList.filter(
-  //   data => data.first_name.toLowerCase().includes(props.filterValue) ||
-  //   data.last_name.toLowerCase().includes(props.filterVale)||
-  //   data.email.toLowerCase().includes(props.filterValue) ||
-  //   data.id.split('-')[0].includes(props.filterValue)) 
+  const empList = useSelector((state) => state.employees.employees)
+  const filter = useSelector((state) => state.employees.filter);
+
+  const reversedEmployeeArray = [...empList].reverse();
+
+    const employees = reversedEmployeeArray.filter(
+    data => data.first_name.toLowerCase().includes(filter) ||
+    data.last_name.toLowerCase().includes(filter) ||
+    data.email.toLowerCase().includes(filter) ||
+    data.id.split('-')[0].includes(filter)) 
 
     const employeeData = await employees.map((employee) => (
       <tbody key={employee.id}>
@@ -57,8 +61,17 @@ export default async function EmployeesTable(){
         <td className='gap-1'>
           <button onClick={() => goToUpdateEmployeeDetails(employee.id)}><BiSolidEdit size={22} color='lightblue' /></button>
        
-        <button onClick={() => dispatch(deleteEmployee(employee.id))}><BiSolidTrash size={22} color='pink' /></button>
-        </td>
+        <button onClick={() => deleteEmployeeModalShow()}><BiSolidTrash size={22} color='pink' /></button>
+            {isModalOpen && <Modal
+              desc={`Do you wan't to delete ${employee.first_name} from the employees list ? You can't reverse this action`}
+              dialogue_title={'Deleting Employee'}
+              button1={'Yes, delete'}
+              button2={'Cancel'}
+              id={employee.id}
+              setModal={setIsModalOpen}
+            />
+            }
+          </td>
       </tr>
       </tbody>
     ))
@@ -69,6 +82,8 @@ export default async function EmployeesTable(){
 
   return (
     <div>
+      {empList.length > 0 ? (
+      
       <table className=''>
         <thead>
         <tr>
@@ -85,7 +100,11 @@ export default async function EmployeesTable(){
         {
            employeeData  ? employeeData : <h1>No employee added</h1>   
               }
-      </table>
+        </table>
+        
+      ) : (
+          <NoEmployee />
+      )}
     </div>
   );
 };

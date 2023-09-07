@@ -6,9 +6,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LoginUser } from '../../../redux/auth/auth.reducer';
 import { reset } from '../../../redux/auth/auth.reducer';
 import Link from 'next/link'
+import { toast,ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function Login() {
+
+  const toastOptions = {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
+  
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -31,7 +46,8 @@ function Login() {
 
   const onSubmit = () => {
     if (!email || !password) {
-      alert('Missing required fields');
+      toast.error('Missing Required Fields. Check Your Inputs', toastOptions);
+
     } else {
       try {
         dispatch(LoginUser({ email, password }));
@@ -41,13 +57,17 @@ function Login() {
     }
   };
 
-  // Use useEffect to handle login success and redirect
-  useEffect(() => {
-    if (success) {
-      router.push('/');
-      dispatch(reset())
+    useEffect(() => {
+    if (error) {
+      toast.error('Error logging In. Check Your Inputs', toastOptions);
     }
-  }, [success, router]);
+
+    if (success) {
+      toast.success('Log In Successful', toastOptions);
+      window.location.href= '/'
+    }
+  },[error,success])
+
 
   return (
     <div className="w-full text-center h-screen z-40 fixed top-0 left-0 right-0 bottom-0 flex flex-col bg-slate-50 items-center justify-center">
@@ -90,11 +110,17 @@ function Login() {
         <p>Not in the ecosystem yet? <Link href='/auth/register' className='text-slate-600'>Register here</Link></p>
       </section>
 
-     {/* Display loading message */}
-     {loading ? <h1>Loading...</h1> : ''}
 
-    {/* Display error message */}
-    {error ? <p className='text-red-700'>Error with login. Probably you provided wrong credentials</p> : ''}
+      <ToastContainer position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"/>
     </div>
   );
 }

@@ -1,14 +1,27 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'; // Use 'next/router' instead of 'next/navigation'
-import { RegisterUser } from '../../../redux/auth/auth.reducer';
+import { RegisterUser, reset } from '../../../redux/auth/auth.reducer';
 import '../../../components/auth/auth.css';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link'
+import { toast,ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
-const Register = () => {
+function Register() {
 
+  const toastOptions = {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
+  
     const [formData, setFormData] = useState({
       name: '',
       email: '',
@@ -19,34 +32,42 @@ const Register = () => {
   const { name, email, password, password2 } = formData;
   const {error,loading,success} = useSelector((state) => state.auth)
     
-    const router = useRouter();
     const dispatch = useDispatch();
   
-    const onChange = (e) => {
+  const onChange = (e) => {
+      dispatch(reset())
       setFormData({
         ...formData,
         [e.target.name]: e.target.value,
       });
     };
-    const onSubmit = async (e) => {
+    const onSubmit = (e) => {
       e.preventDefault();
     
       if (password !== password2) {
         // Display an error message in the UI
-        alert('Passwords do not match');
+        toast.error('Passwords do not match', toastOptions);
       } else {
         try {
-          // Assuming RegisterUser is an async Redux action
           dispatch(RegisterUser({ name, email, password }));
-          router.push('/')
         } catch (err) {
           // Handle the error gracefully and display an error message in the UI
-          alert('Error with registration. Probably the user already exists.');
           console.error('Error with registration', err);
         }
       }
     };
-
+    
+    useEffect(() => {
+      if (error) {
+        toast.error('Error Creating Account. Check Inputs', toastOptions);
+      }
+  
+      if (success) {
+        toast.success('Account Creation Successful', toastOptions);
+        window.location.href= '/'
+      }
+    },[error,success])
+  
     
   return (
     <div className="w-full text-center h-screen z-40 fixed top-0 left-0 right-0 bottom-0 flex flex-col bg-slate-50 items-center justify-center">
@@ -112,12 +133,16 @@ const Register = () => {
         <p>Already have an account? <Link href='/auth/login' className='text-slate-400'>Login here</Link></p>
       </section>
 
-      
-      {/* Display loading message */}
-      {loading ? <h1>Loading...</h1> : ''}
-
-      {/* Display error message */}
-      {error ? <p className='text-red-700'>Error with registration. Probably user already exists</p> : ''}
+      <ToastContainer position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"/>
     </div>
   )
 }

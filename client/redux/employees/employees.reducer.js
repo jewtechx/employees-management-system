@@ -4,17 +4,20 @@ const { useSelector } = require('react-redux')
 
 const initialState = {
   employees: [],
+  filter: '',
+  backendFilterCondition:'',
   loading:false,
   ready: false,
   error: false,
 }
 let token
-const userDataString = localStorage.getItem("user");
+if (typeof window !== 'undefined') {
+  const userDataString = window.localStorage.getItem("user");
   if (userDataString) {
-  const userData = JSON.parse(userDataString);
-  token = userData.token
+    const userData = JSON.parse(userDataString);
+    token = userData.token
   }
-
+}
 
 export const getEmployees = createAsyncThunk('getEmployees', async (thunkAPI) => {
   try {
@@ -34,7 +37,7 @@ export const getEmployees = createAsyncThunk('getEmployees', async (thunkAPI) =>
   }
 })
 
-export const filterEmployee = createAsyncThunk('filterEmployee', async (data, thunkAPI) => {
+export const filterEmployee = createAsyncThunk('filterEmployee', async (condition, thunkAPI) => {
   try {
       
       const res = await fetch(`http://localhost:5000/employees/filter`,{
@@ -52,16 +55,16 @@ export const filterEmployee = createAsyncThunk('filterEmployee', async (data, th
     }
 })
 
-export const getSpecEmployee = createAsyncThunk('getSpecEmployee', async (data, thunkAPI) => {
+export const getSpecEmployee = createAsyncThunk('getSpecEmployee', async (id, thunkAPI) => {
     try{
           const res = await fetch(`http://localhost:5000/employees/${id}`,{
-          headers:{
+          headers: {
               Authorization: `Bearer ${token}`
             }
           })
         
          
-          if(!res.ok) throw new Error('Employee not found')
+      if (!res.ok) throw new Error('Employee not found')
           return await res.json()
       } catch (error) {
         return thunkAPI.rejectWithValue({error:error.message})
@@ -89,9 +92,6 @@ export const AddEmployee = createAsyncThunk('addEmployee', async(data,thunkAPI) 
 export const deleteEmployee = createAsyncThunk('delete',async(id,thunkAPI) => {
 
   const empid = id;
-  const confirmed = window.confirm(`Are you sure you want to delete this employee - id : ${empid.split('-')[0]}?`);
-  
-  if (confirmed) {
 
     try {
       fetch(`http://localhost:5000/employees/${empid}`, {
@@ -106,8 +106,6 @@ export const deleteEmployee = createAsyncThunk('delete',async(id,thunkAPI) => {
   } catch (err) {
       return thunkAPI.rejectWithValue({err:err.message})
     }
-
-  }
   
 })
 
@@ -131,13 +129,25 @@ export const updateEmployeeDetails = createAsyncThunk('update',async(data,thunkA
        return thunkAPI.rejectWithValue({error:error.message})
     }
 })
-  
+
 
   //SLICE 
 const employeeSlice = createSlice({
     name: 'employees',
     initialState,
-    reducers: {},
+    reducers: {
+      setFilterValue: (state,action) => {
+          state.filter = action.payload
+      },
+      setBackendFilterValue: (state,action) => {
+          state.backendFilterCondition = action.payload
+      },
+      reset: (state) => {
+        state.loading = false,
+        state.ready = false,
+        state.error = false
+      }
+    },
     extraReducers: (builder) => {
       builder
       .addCase(getEmployees.pending, (state) => {
@@ -158,7 +168,7 @@ const employeeSlice = createSlice({
       })
   .addCase(getSpecEmployee.fulfilled, (state, action) => {
     state.loading = false;
-    state.ready = true;
+    // state.ready = true;
     state.employees = action.payload;
     state.error = false; // Reset error status on success
   })
@@ -177,7 +187,7 @@ const employeeSlice = createSlice({
   })
   .addCase(filterEmployee.rejected,(state) => {
     state.loading = false
-          state.error = true
+    state.error = true
   })
   .addCase(AddEmployee.pending, (state) => {
     state.loading = true;
@@ -189,11 +199,25 @@ const employeeSlice = createSlice({
   })
   .addCase(AddEmployee.rejected,(state) => {
     state.loading = false
-          state.error = true
+    state.error = true
   })
-  
+  .addCase(updateEmployeeDetails.pending, (state) => {
+    state.loading = true;
+  })
+  .addCase(updateEmployeeDetails.fulfilled, (state, action) => {
+    state.loading = false;
+    state.ready = true;
+    state.error = false; // Reset error status on success
+  })
+  .addCase(updateEmployeeDetails.rejected,(state) => {
+    state.loading = false
+    state.error = true
+  })
+  // .addCase(getBackendFilterValueFromLocalStorage.fulfilled, (state,action) => {
+  //   state.backendFilterCondition = action.payload
+  // })
     }
 })
 
-export const employeeActions = employeeSlice.actions
+export const { setFilterValue,reset,setBackendFilterValue } = employeeSlice.actions
 export default employeeSlice.reducer

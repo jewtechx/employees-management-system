@@ -21,8 +21,7 @@ export default function RootLayout({
   
   
   return (
-
-      <body className={`${roboto.className} w-full flex bg-white`}>
+    <body className={`${roboto.className} w-full flex bg-white`}>
             <SideNavbar />
             <main className='main flex flex-col bg-[rgb(250, 250, 250)] jusify-center'>
               <Topnav />
@@ -30,6 +29,7 @@ export default function RootLayout({
                   {children}
               </ReduxProvider>
             </main>
+  
     </body>
   )
 }

@@ -1,11 +1,31 @@
 "use client"
 import React,{useEffect} from 'react'
-import {AddEmployee} from '../../../redux/employees/employees.reducer'
+import {AddEmployee,reset} from '../../../redux/employees/employees.reducer'
 import { useRouter } from 'next/navigation'
 import ReduxProvider from '../../provider'
 import { useSelector,useDispatch } from 'react-redux'
+import { toast,ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 export default function page({params}) {
+  
+  const dispatch = useDispatch()
+  
+  const toastOptions = {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
+  
+
+
   const router = useRouter()
   const [saving,setSaving] = React.useState('Save')
   const [formValues,setFormValues] = React.useState({
@@ -38,17 +58,18 @@ export default function page({params}) {
     return `${year} ${day} ${month} `;
   };
   formatDateForInput()
-
-  function handleNewFormData(value, name) {
-    const date = formatDateForInput();
   
+  function handleNewFormData(value, name) {
+    setSaving('Save') 
+    const date = formatDateForInput();
+    
     let updatedValue = value;
   
     if (name === 'phone_number') {
       // Remove non-numeric characters from the phone number and convert to a number
       updatedValue = Number(value.replace(/\D/g, ''));
     }
-  
+    
     let updatedEndDateValue = null;
     if (name === 'end_date') {
       // Convert empty end_date to null
@@ -64,29 +85,33 @@ export default function page({params}) {
   
   }
   
-  const dispatch = useDispatch()
   const state = useSelector((state) => state.employees)
   const {loading,error,ready} = state
+  dispatch(reset())
 
-  async function handleSave() {
+  function handleSave() {
     setSaving('Saving...') 
-    try{
-      await dispatch(AddEmployee(formValues))
-    }catch(err){
-      alert('Error adding employee')
-    }
-    setSaving('Save')
-   }
+    dispatch(reset())
+    dispatch(AddEmployee(formValues))
+    
+  }
 
-  
   useEffect(() => {
-      
-    if (ready) {
-      router.push('/')
+    if (error) {
+      toast.error('Error creating employee\'s details', toastOptions);
+      setSaving('Error');
     }
-   },[ready])
 
+    if (ready) {
+      toast.success('created employee successfully', toastOptions);
+      setSaving('Saved ✔');
+      window.location.href= '/'
+    }
+  },[error,ready])
+   
+    
   
+
    function clearData(){
     setFormValues(prev => ({
       first_name:'',
@@ -110,7 +135,6 @@ export default function page({params}) {
     router.push('/')
   }
   return (
-    <ReduxProvider>
     <div className='mt-6'>
         <h1 className='text-2xl text-slate-800'>Add a new employee</h1>
 
@@ -204,7 +228,17 @@ export default function page({params}) {
         </div>
 
         </form>
+        <ToastContainer position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"/>
       </div>
-      </ReduxProvider>
+   
   )
 }

@@ -1,17 +1,34 @@
-import {BiSolidSearch, BiSolidFilterAlt,BiSolidFileExport} from 'react-icons/bi'
-import { useDispatch } from 'react-redux'
-import { filterEmployee } from '../redux/employees/employees.reducer'
+"use client"
+import { useEffect } from 'react'
+import { BiSolidSearch, BiSolidFilterAlt, BiSolidFileExport } from 'react-icons/bi'
+import { useDispatch,useSelector } from 'react-redux'
+import { filterEmployee, setBackendFilterValue } from '../redux/employees/employees.reducer'
+import { setFilterValue } from '../redux/employees/employees.reducer'
 
 export default function FilterTable() {
-  // //getting wildcards
-  //  function getFilterValue(value){
-  //    props.filterValue(value.toLowerCase())
-  // }
+  //getting wildcards
+  const dispatch = useDispatch()
+  function getFilterValue(value){
+      dispatch(setFilterValue(value))
+     }
 
-  function filterByButton(condition){
-    const dispatch = useDispatch()
-    dispatch(filterEmployee(condition))
+     
+  function filterByButton(filterCondition) {
+       
+    window.localStorage.setItem('filterFromBackend',JSON.stringify(filterCondition))
+    const lsCondition =  window.localStorage.getItem('filterFromBackend')
+    var condition = JSON.parse(lsCondition)
+    dispatch(setBackendFilterValue(condition))
+    
+    if (lsCondition) {
+      dispatch(filterEmployee(condition))
+    }
   }
+
+ //getting filter name
+   const condition = useSelector((state) => state.employees.backendFilterCondition)
+ 
+
   return (
     <div className="">
       <div className="flex gap-2 items-center filter-input justify-between mt-2 flex-wrap">
@@ -22,12 +39,12 @@ export default function FilterTable() {
             </div>
 
           <div className="dropdown dropdown-top">
-            <button tabIndex={0} className="border border-slate-100 rounded-md p-1 text-slate-400 flex gap-1 items-center"><BiSolidFilterAlt className='text-slate-200 w-[25px] h-[20px]'/> Filter</button>
+            <button tabIndex={0} className="border border-slate-100 rounded-md p-1 text-slate-400 flex gap-1 items-center"><BiSolidFilterAlt className='text-slate-200 w-[25px] h-[20px]'/>{condition ? condition : 'Filter'}</button>
             <ul tabIndex={0} className="dropdown-content z-[1] menu text-slate-700 p-2 shadow bg-base-100 rounded-box w-52">
               <li onClick={() => filterByButton('order by first_name')}><a>Order By Names (ASC)</a></li>
-              <li onClick={() => filterByButton('order by first_name desc')}><a>Order By Names (DSC)</a></li>
+              <li onClick={() => filterByButton('order by first_name desc')}><a>Order By Names (DESC)</a></li>
               <li onClick={() => filterByButton('order by start_date')}><a>Order By Date (ASC)</a></li>
-              <li onClick={() => filterByButton('order by start_date desc')}><a>Order By Date in (DSC)</a></li>
+              <li onClick={() => filterByButton('order by start_date desc')}><a>Order By Date in (DESC)</a></li>
             </ul>
           </div>
         </div>
