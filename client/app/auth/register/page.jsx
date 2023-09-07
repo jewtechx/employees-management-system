@@ -130,7 +130,7 @@ function Register() {
             </button>
           </div>
         </form>
-        <p>Already have an account? <Link href='/auth/login' className='text-slate-400'>Login here</Link></p>
+        <p>Already have an account? <Link href='/auth/login' className='font-[600] text-purple-500 hover:text-purple-600'> Login here</Link></p>
       </section>
 
       <ToastContainer position="top-right"

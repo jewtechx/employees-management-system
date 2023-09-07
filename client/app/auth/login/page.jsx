@@ -101,13 +101,13 @@ function Login() {
           </div>
 
           <div className="form-group">
-            <Link href="#" className='-mt-4 text-right'>Forgot Password?</Link><br />
-            <button type="button" onClick={onSubmit} className="btn btn-block">
+            <Link href="#" className='-mt-4 text-right text-purple-400/80'>Forgot Password?</Link><br />
+            <button type="button" onClick={onSubmit} className="btn btn-block mt-2">
               Submit
             </button>
           </div>
         </form>
-        <p>Not in the ecosystem yet? <Link href='/auth/register' className='text-slate-600'>Register here</Link></p>
+        <p>Not in the ecosystem yet?  <Link href='/auth/register' className='font-[600] text-purple-500 hover:text-purple-600'> Register here</Link></p>
       </section>
 
 
