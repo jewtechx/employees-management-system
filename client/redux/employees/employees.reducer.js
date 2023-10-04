@@ -39,14 +39,13 @@ export const getEmployees = createAsyncThunk('getEmployees', async (thunkAPI) =>
 
 export const filterEmployee = createAsyncThunk('filterEmployee', async (condition, thunkAPI) => {
   try {
-      
       const res = await fetch(`http://localhost:5000/employees/filter`,{
         method:'POST',
             headers:{
             'Content-Type':'application/json',
             Authorization: `Bearer ${token}`
         },
-        body:JSON.stringify({condition:condition})
+        body:JSON.stringify({condition:condition == null ? "order by start_date" : condition})
         })
         if (!res.ok) throw new Error('Filtering gone wrong in backend')
         return await res.json(); 

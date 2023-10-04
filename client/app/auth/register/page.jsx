@@ -58,13 +58,17 @@ function Register() {
     };
     
     useEffect(() => {
-      if (error) {
-        toast.error('Error Creating Account. Check Inputs', toastOptions);
-      }
-  
-      if (success) {
-        toast.success('Account Creation Successful', toastOptions);
-        window.location.href= '/'
+      if (loading && !error && !success) {
+        toast.loading('Please wait...',toastOptions)
+      } else {
+        if (error) {
+          toast.error('Error Creating Account. Check Inputs', toastOptions);
+        }
+    
+        if (success) {
+          toast.success('Account Creation Successful', toastOptions);
+          window.location.href= '/'
+        }
       }
     },[error,success])
   

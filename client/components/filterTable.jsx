@@ -2,8 +2,11 @@
 import { useEffect } from 'react'
 import { BiSolidSearch, BiSolidFilterAlt, BiSolidFileExport } from 'react-icons/bi'
 import { useDispatch,useSelector } from 'react-redux'
-import { filterEmployee, setBackendFilterValue } from '../redux/employees/employees.reducer'
-import { setFilterValue } from '../redux/employees/employees.reducer'
+import { filterEmployee, getEmployees, setBackendFilterValue } from '../redux/employees/employees.reducer'
+import { setFilterValue} from '../redux/employees/employees.reducer'
+
+import {CSVLink} from 'react-csv'
+
 
 export default function FilterTable() {
   //getting wildcards
@@ -18,9 +21,9 @@ export default function FilterTable() {
     window.localStorage.setItem('filterFromBackend',JSON.stringify(filterCondition))
     const lsCondition =  window.localStorage.getItem('filterFromBackend')
     var condition = JSON.parse(lsCondition)
-    dispatch(setBackendFilterValue(condition))
-    
-    if (lsCondition) {
+
+    if (condition) {
+      dispatch(setBackendFilterValue(condition))
       dispatch(filterEmployee(condition))
     }
   }
@@ -28,7 +31,68 @@ export default function FilterTable() {
  //getting filter name
    const condition = useSelector((state) => state.employees.backendFilterCondition)
  
+  //export aas csv
+  const employees = useSelector((state) => state.employees.employees);
 
+  // Map employees to an array of arrays
+  const employeeData = employees.map(
+    ({
+      id,
+      first_name,
+      last_name,
+      date_of_birth,
+      gender,
+      email,
+      phone_number,
+      address,
+      department,
+      position,
+      salary,
+      start_date,
+      end_date,
+      supervisor,
+      status,
+    }) => [
+      id,
+      first_name,
+      last_name,
+      date_of_birth,
+      gender,
+      email,
+      phone_number,
+      address,
+      department,
+      position,
+      salary,
+      start_date,
+      end_date,
+      supervisor,
+      status,
+    ]
+  );
+  
+  // Add the header row to the beginning of the array
+  const csvData = [
+    [
+      "id",
+      "first_name",
+      "last_name",
+      "date_of_birth",
+      "gender",
+      "email",
+      "phone_number",
+      "address",
+      "department",
+      "position",
+      "salary",
+      "start_date",
+      "end_date",
+      "supervisor",
+      "status",
+    ],
+    ...employeeData, // Spread the employee data
+  ];
+  
   return (
     <div className="">
       <div className="flex gap-2 items-center filter-input justify-between mt-2 flex-wrap">
@@ -50,8 +114,8 @@ export default function FilterTable() {
         </div>
 
         
-        <button className="border border-slate-100 rounded-md p-2 text-slate-400 flex gap-1 items-center"><BiSolidFileExport className='text-slate-200 w-[25px] h-[20px]'/> Export</button>
-        
+        <CSVLink filename="employees.csv" data={csvData}><button className="border border-slate-100 rounded-md p-2 text-slate-400 flex gap-1 items-center"><BiSolidFileExport className='text-slate-200 w-[25px] h-[20px]'/> Export</button>
+        </CSVLink>
       </div>
     </div>
   )

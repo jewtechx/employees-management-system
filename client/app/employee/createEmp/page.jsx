@@ -55,14 +55,13 @@ export default function page({params}) {
     if (month.length === 1) month = '0' + month;
     if (day.length === 1) day = '0' + day;
 
-    return `${year} ${day} ${month} `;
+    return `${year} ${month} ${day}`;
   };
   formatDateForInput()
   
   function handleNewFormData(value, name) {
     setSaving('Save') 
     const date = formatDateForInput();
-    
     let updatedValue = value;
   
     if (name === 'phone_number') {

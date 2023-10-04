@@ -70,7 +70,12 @@ td{
 tr:nth-child(even) {
   background-color: #f9f8f8;
 } */
-
+.profile_dropdown{
+  transition:0.6s ease-in-out;
+}
+.show_dropdown{
+  top:50px
+}
 .input{
   @apply text-slate-500 text-[11px] bg-slate-50 rounded border border-blue-50 p-2 outline-blue-200 mt-2 mb-2 px-4 tracking-wide font-semibold
 }

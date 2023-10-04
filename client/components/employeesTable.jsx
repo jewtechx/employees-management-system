@@ -21,7 +21,7 @@ export default async function EmployeesTable(){
   //delete employee
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  function deleteEmployeeModalShow(name,id) {
+  function deleteEmployeeModalShow() {
     setIsModalOpen(bool => !bool)
   }
 

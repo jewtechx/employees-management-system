@@ -77,7 +77,7 @@ function addEmployer(req, res) {
       !salary ||
       !start_date ||
       !status){
-       return res.status(400).json({
+       return res.status(500).json({
           error:'Probably missing required fields while posting'
         })
       }
@@ -86,11 +86,11 @@ function addEmployer(req, res) {
       const startDate = new Date(start_date)
       const DOB = new Date(date_of_birth)
   
-      if(isNaN(startDate) || isNaN(DOB)){
-        return res.status(400).json({
+      if( isNaN(DOB)){
+        return res.status(500).json({
           error:'invalid date format'
         })
-      }
+      } 
 
     const query = `
       INSERT INTO employee (
@@ -172,7 +172,6 @@ function addEmployer(req, res) {
       !id ||
       !first_name ||
       !last_name ||
-      !date_of_birth ||
       !gender ||
       !email ||
       !phone_number ||

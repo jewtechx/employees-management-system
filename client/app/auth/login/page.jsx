@@ -38,6 +38,7 @@ function Login() {
   const dispatch = useDispatch();
 
   const onChange = (e) => {
+    dispatch(reset())
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -66,7 +67,12 @@ function Login() {
       toast.success('Log In Successful', toastOptions);
       window.location.href= '/'
     }
-  },[error,success])
+      if (loading && !success && !error) {
+        toast.loading('Please wait...',toastOptions)
+      } else {
+        null
+      }
+  },[loading,error,success])
 
 
   return (
